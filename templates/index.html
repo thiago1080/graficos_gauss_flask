@@ -1,0 +1,17 @@
+<head>
+<meta http-equiv="Content-Language" content="pt-br">
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../static/styles.css">
+<script type="text/javascript" src="../static/js.js"></script>
+</head>
+
+<body>
+{% block tablinks %}
+<div class="tab">
+  <button id="corrente_zero" class="tablinks"> <a href='/{{insta+"_"+info[0]+".html"}}'>Correntes</a></button>
+  <button id="potencia_negativa" class="tablinks"> <a href='/{{insta+"_"+info[1]+".html"}}'>Potências</a></button>
+  <button id="tensao" class="tablinks"> <a href='/{{insta+"_"+info[2]+".html"}}'>Tensões</a></button>
+  <button id="anomalia_angulos" class="tablinks"> <a href='/{{insta+"_"+info[3]+".html"}}'>Ângulos</a></button>
+</div>
+{% endblock %}
+{% block content %} {% endblock %}
