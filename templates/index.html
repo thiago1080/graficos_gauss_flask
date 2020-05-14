@@ -8,10 +8,10 @@
 <body>
 {% block tablinks %}
 <div class="tab">
-  <button id="correntes" class="tablinks"> <a href='/{{insta+"_"+info[0]+".html"}}'>Correntes</a></button>
-  <button id="potencia" class="tablinks"> <a href='/{{insta+"_"+info[1]+".html"}}'>Potências</a></button>
-  <button id="tensoes" class="tablinks"> <a href='/{{insta+"_"+info[2]+".html"}}'>Tensões</a></button>
-  <button id="angulos" class="tablinks"> <a href='/{{insta+"_"+info[3]+".html"}}'>Ângulos</a></button>
+  <button id="correntes" class={{abas["correntes"]|tojson}} onclick = 'redir({{(insta+"_"+info[0]+".html")|tojson}})'> Correntes</button>
+  <button id="potencias" class={{abas["potencias"]|tojson}} onclick = 'redir({{(insta+"_"+info[1]+".html")|tojson}})'> Potências</button>
+  <button id="tensoes" class={{abas["tensoes"]|tojson}} onclick = 'redir({{(insta+"_"+info[2]+".html")|tojson}})'> Tensões</button>
+  <button id="angulos" class={{abas["angulos"]|tojson}} onclick = 'redir({{(insta+"_"+info[3]+".html")|tojson}})'> Ângulos</button>
 </div>
 {% endblock %}
 {% block content %} {% endblock %}

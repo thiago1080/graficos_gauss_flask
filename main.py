@@ -17,12 +17,13 @@ colunas = {
     'correntes': ['IA','IB','IC', 'VA', 'VB', 'VC']
 }
 
+
 def max_min_table(colunas, cols_selection ,databd):
     s=''
     s+='<table> <tr> <th> Coluna </th> <th> Máximo </th> <th> Mínimo </th> </tr>'
     for i in colunas[cols_selection]:
         s+=('<tr>')
-        s+=(f'<td>{i}</td>')
+        s+=(f'<td><b>{i}</b></td>')
         s+=(f'<td>{np.min(databd[i]).round(decimals=0)}</td>')
         s+=(f'<td>{np.max(databd[i]).round(decimals=0)}</td>')
         s+=('</tr>')
@@ -31,7 +32,7 @@ def max_min_table(colunas, cols_selection ,databd):
 
 def build_page(page,colunas, cols_selection,databd):
     with open(page,'r') as f:
-        content = ['{% extends "index.html" %} \n' ,'{% block content %} \n', '<style> #'+cols_selection+' { background-color: #ccc; } </style>' ]
+        content = ['{% extends "index.html" %} \n' ,'{% block content %} \n']
         content.append('<div id=maindiv>')
         content.append(max_min_table(colunas,cols_selection,databd))
         content.extend(f.read().splitlines(True)[4:-2])
@@ -133,7 +134,6 @@ def plotla2(databd, instalacao, RTC, datai, dataf, cols_selection, togglebuttons
         font=dict(family='Courier New, monospace', size=14),
         x=0)
     )
-
     html_file = os.path.join(html,instalacao+'_'+cols_selection+".html")
     fig.update_layout(dict1={'font':{'size':10}})
     fig.update_layout(legend_orientation="h")

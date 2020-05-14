@@ -55,7 +55,13 @@ list_datafim = []
 list_instalacao = []
 
 
-
+abas0 = {
+    'potencias': 'tablinks',
+    'angulos': 'tablinks',
+    'tensoes': 'tablinks',
+    'correntes': 'tablinks'
+}
+info0=['correntes','potencias','tensoes','angulos']
 @app.route('/t3')
 def teste():
     return render_template('index.html')
@@ -85,7 +91,6 @@ def postJsonHandler():
     filename = instalacao + '.json'
     RTC=d1['info']['RTC']
     fas1 = pd.DataFrame(columns = d1['fasorial_columns'], data=d1['fasorial'].values(), index=d1['fasorial'].keys())
-    fas1.to_csv('f1.csv')
     dataif = fas1.index[0].split(' ')[0]
     dataff = fas1.index[-1].split(' ')[0]
     dmm1= d1['mm']
@@ -102,17 +107,23 @@ def postJsonHandler():
     togglebuttons, disagreetext = plotla2(fas1, instalacao, RTC, datai, dataf,'potencias', togglebuttons, disagreetext, index, foco)
     togglebuttons, disagreetext = plotla2(fas1, instalacao, RTC, datai, dataf,'tensoes', togglebuttons, disagreetext, index, foco)
     togglebuttons, disagreetext = plotla2(fas1, instalacao, RTC, datai, dataf,'angulos', togglebuttons, disagreetext, index, foco)
-    return render_template('index.html',insta=instalacao, info=['correntes','potencias','tensoes','angulos'])
+    return render_template('index.html',insta=instalacao, info=info0, abas=abas0)
 
 @app.route('/<instalacao>')
 def template_index(instalacao):
     if '_' not in instalacao:
         print('-----------------TEMPLATIOON----------------',instalacao)
-        return render_template('index.html',insta=instalacao, info=['correntes','potencias','tensoes','angulo'])
+        return render_template('index.html',insta=instalacao, info=info0, abas=abas0)
     else:
         print('-----------------NOOITALPMET----------------',instalacao)
         insta= instalacao.split('_')[0]
-        return render_template(instalacao ,insta=insta,  info=['correntes','potencias','tensoes','angulos'])
+        cols_selection=instalacao.split('_')[1].split('.html')[0]
+        for k in abas0.keys():
+            if k==cols_selection:
+                abas0[k]='tablinks  active'
+            else:
+                abas0[k]='tablinks'
+        return render_template(instalacao ,insta=insta,  info=info0, abas=abas0)
 """
 @app.route('/<instalacao>/<informacao>')
 def template_index(instalacao, informacao):
