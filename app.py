@@ -132,4 +132,5 @@ def template_index(instalacao, informacao):
 """
 
 if __name__ == '__main__':
+    app.jinja_env.cache = {}
     app.run('0.0.0.0')
