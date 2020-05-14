@@ -98,24 +98,21 @@ def postJsonHandler():
     list_datafim.append(dataf)
     list_instalacao.append(instalacao)
     index=0 #hc
-    togglebuttons, disagreetext = plotla2(fas1, instalacao, RTC, datai, dataf,'anomalia_angulos', togglebuttons, disagreetext, index, foco)
-    togglebuttons, disagreetext = plotla2(fas1, instalacao, RTC, datai, dataf,'tensao_zerada', togglebuttons, disagreetext, index, foco)
-    togglebuttons, disagreetext = plotla2(fas1, instalacao, RTC, datai, dataf,'potencia_negativa', togglebuttons, disagreetext, index, foco)
-    #togglebuttons, disagreetext = plotla2(fas1, instalacao, RTC, datai, dataf,'tensao', togglebuttons, disagreetext, index, foco)
-    togglebuttons, disagreetext = plotla2(fas1, instalacao, RTC, datai, dataf,'corrente_zero', togglebuttons, disagreetext, index, foco)
-    return render_template('index.html',insta=instalacao, info=['corrente_zero','potencia_negativa','tensao_zerada','anomalia_angulos'])
-
+    togglebuttons, disagreetext = plotla2(fas1, instalacao, RTC, datai, dataf,'correntes', togglebuttons, disagreetext, index, foco)
+    togglebuttons, disagreetext = plotla2(fas1, instalacao, RTC, datai, dataf,'potencias', togglebuttons, disagreetext, index, foco)
+    togglebuttons, disagreetext = plotla2(fas1, instalacao, RTC, datai, dataf,'tensoes', togglebuttons, disagreetext, index, foco)
+    togglebuttons, disagreetext = plotla2(fas1, instalacao, RTC, datai, dataf,'angulos', togglebuttons, disagreetext, index, foco)
+    return render_template('index.html',insta=instalacao, info=['correntes','potencias','tensoes','angulos'])
 
 @app.route('/<instalacao>')
 def template_index(instalacao):
     if '_' not in instalacao:
         print('-----------------TEMPLATIOON----------------',instalacao)
-        return render_template('index.html',insta=instalacao, info=['corrente_zero','potencia_negativa','tensao_zerada','anomalia_angulos'])
+        return render_template('index.html',insta=instalacao, info=['correntes','potencias','tensoes','angulo'])
     else:
         print('-----------------NOOITALPMET----------------',instalacao)
         insta= instalacao.split('_')[0]
-        return render_template(instalacao,insta=insta, info=['corrente_zero','potencia_negativa','tensao_zerada','anomalia_angulos'])
-        return render_template(instalacao ,insta=insta, info=['anomalia_angulos','tensao_zerada','potencia_negativa','tensao','corrente_zero'])
+        return render_template(instalacao ,insta=insta,  info=['correntes','potencias','tensoes','angulos'])
 """
 @app.route('/<instalacao>/<informacao>')
 def template_index(instalacao, informacao):

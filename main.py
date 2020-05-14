@@ -11,23 +11,34 @@ from IPython.display import display, Markdown, clear_output
 import ipywidgets as widgets
 
 colunas = {
-    'corrente_zero':['IA','IB','IC'],
-    'tensao_minima' : ['VA', 'VB','VC'],
-    'memoria_massa' : ['memoria_de_massa'],
-    'potencia_negativa': ['IA','IB','IC', 'PA', 'PB', 'PC'],
-    'anomalia_angulos': ['VA','VB','VC','AVAB','AVBC','AVAC'],
-    'tensao': ['VA','VB','VC','AVAB','AVBC','AVAC'],
-    'tensao_zerada': ['IA','IB','IC', 'VA', 'VB', 'VC']
+    'potencias': ['IA','IB','IC', 'PA', 'PB', 'PC'],
+    'angulos': ['VA','VB','VC','AVAB','AVBC','AVAC'],
+    'tensoes': ['VA','VB','VC','AVAB','AVBC','AVAC'],
+    'correntes': ['IA','IB','IC', 'VA', 'VB', 'VC']
 }
 
-def build_page(page,cols_selection):
+def max_min_table(colunas, cols_selection ,databd):
+    s=''
+    s+='<table> <tr> <th> Coluna </th> <th> Máximo </th> <th> Mínimo </th> </tr>'
+    for i in colunas[cols_selection]:
+        s+=('<tr>')
+        s+=(f'<td>{i}</td>')
+        s+=(f'<td>{np.min(databd[i]).round(decimals=0)}</td>')
+        s+=(f'<td>{np.max(databd[i]).round(decimals=0)}</td>')
+        s+=('</tr>')
+    s+='</table>'
+    return s
+
+def build_page(page,colunas, cols_selection,databd):
     with open(page,'r') as f:
         content = ['{% extends "index.html" %} \n' ,'{% block content %} \n', '<style> #'+cols_selection+' { background-color: #ccc; } </style>' ]
+        content.append(max_min_table(colunas,cols_selection,databd))
+        #content.append(' <table > <tr> <th>columns</th> <th>max</th> <th>min</th> </tr> <tr> <td>VA</td> <td>'+str(inf["maxVA"])+'</td> <td>'+str(inf["minVA"])+'</td> </tr> <tr> <td>VB</td> <td>'+str(inf["maxVB"])+'</td>    <td>'+str(inf["minVB"])+'</td> </tr> <tr> <td>VC</td> <td>'+str(inf["minVC"])+'</td> <td>'+str(inf["maxVC"])+'</td> </tr> <tr> <td>VAC</td> <td>'+str(inf["maxVAC"])+'</td> <td>'+str(inf["minVAC"])+'</td> </tr> <tr> <td>VBC</td> <td>'+str(inf["maxVBC"])+'</td> <td>'+str(inf["minVBC"])+'</td> </tr> <tr> <td>VAB</td> <td>'+str(inf["maxVAB"])+'</td> <td>'+str(inf["minVAB"])+'</td> </tr> </table>')
         content.extend(f.read().splitlines(True)[3:-2])
         content.append('{% endblock %}')
     with open(page,'w') as f:
         f.writelines(content)
-    
+
 
 
 def query_oracle(command):
@@ -57,6 +68,7 @@ def query_oracle(command):
 #         connection.close()
 
 def plotla2(databd, instalacao, RTC, datai, dataf, cols_selection, togglebuttons, disagreetext, index, foco):
+
     info_text='<br>'
     html = "templates/" #hc
     proj="P&D Light"
@@ -69,7 +81,10 @@ def plotla2(databd, instalacao, RTC, datai, dataf, cols_selection, togglebuttons
 
     descr = "Instalacao "+instalacao
     fig = make_subplots(rows=3, cols=1, specs=[[{"secondary_y": True}],[{"secondary_y": True}],[{"secondary_y": True}]])
-    if cols_selection == 'potencia_negativa':
+
+
+
+    if cols_selection == 'potencias':
         databd = calcula_potencia_corrente(RTC, databd, cols_selection)
         fig.add_trace(go.Scatter(x=databd.index, y=databd['IA'], name='iA', line=dict(width=1)),row=1,col=1, secondary_y=True)
         fig.add_trace(go.Scatter(x=databd.index, y=databd['PA'], name='pA'),row=1,col=1, secondary_y=False)
@@ -79,7 +94,8 @@ def plotla2(databd, instalacao, RTC, datai, dataf, cols_selection, togglebuttons
         fig.add_trace(go.Scatter(x=databd.index, y=databd['PC'], name='pC'),row=3,col=1, secondary_y=False)
         fig.update_yaxes(title_text="Potencia", secondary_y=False)
         fig.update_yaxes(title_text="Corrente", secondary_y=True)
-    if cols_selection == 'anomalia_angulos': 
+
+    if cols_selection == 'angulos': 
         fig.add_trace(go.Barpolar(name = "avA", r = [max(databd['VA'])]*len(databd['AVA']), theta=databd['AVA'], width=[1]*len(databd['AVA']),marker_color=['blue']*len(databd['AVA']),marker_line_color='blue',marker_line_width=2, opacity=0.8))
         fig.add_trace(go.Barpolar(name = "avB",r = [max(databd['VB'])]*len(databd['AVB']), theta=databd['AVB'], width=[1]*len(databd['AVB']),marker_color=['green']*len(databd['AVB']), marker_line_color='green', marker_line_width=2, opacity=0.8))
         fig.add_trace(go.Barpolar(name = "avC",r = [max(databd['VC'])]*len(databd['AVC']), theta=databd['AVC'], width=[1]*len(databd['AVC']),marker_color=['red']*len(databd['AVC']), marker_line_color='red', marker_line_width=2, opacity=0.8))
@@ -89,7 +105,7 @@ def plotla2(databd, instalacao, RTC, datai, dataf, cols_selection, togglebuttons
                 radialaxis = dict(range=[0, max(max(databd['VA']),max(databd['VB']),max(databd['VC']))], showticklabels=True),
                 angularaxis = dict(direction = "counterclockwise", dtick = 10))
             )
-    if cols_selection == 'tensao_zerada':   
+    if cols_selection == 'correntes':   
         fig.add_trace(go.Scatter(x=databd.index, y=databd['IA'], name='iA'),row=1,col=1, secondary_y=True)
         fig.add_trace(go.Scatter(x=databd.index, y=databd['VA'], name='vA'),row=1,col=1, secondary_y=False)
         fig.add_trace(go.Scatter(x=databd.index, y=databd['IB'], name='iB'),row=2,col=1, secondary_y=True)
@@ -99,14 +115,8 @@ def plotla2(databd, instalacao, RTC, datai, dataf, cols_selection, togglebuttons
         fig.update_yaxes(range=[-5, 150], secondary_y=False)
         fig.update_yaxes(title_text="Tensão", secondary_y=False)
         fig.update_yaxes(title_text="Corrente", secondary_y=True)
-        
-    if cols_selection in ['corrente_zero', 'tensao_minima', 'memoria_massa']:
-        print('------------------------',cols_selection)
-        for col in cols:
-            fig.add_trace(go.Scatter(x=databd.index, y=databd[col].apply(float), name=col, line=dict(width=1)),row=1,col=1, secondary_y=True)
-            info_text+='min_'+col+' : '+str(np.min(databd[col]))+' '
-            info_text+='max_'+col+' : '+str(np.max(databd[col]))+'<br>'
-    if cols_selection == 'tensao':
+
+    if cols_selection == 'tensoes':
         fig = make_subplots(rows=3, cols=1, specs=[[{"secondary_y": True}],[{"secondary_y": True}],[{"secondary_y": True}]])  
         fig.add_trace(go.Scatter(x=databd.index, y=databd['VA'], name='vA'),  row=1,col=1, secondary_y=True)
         fig.add_trace(go.Scatter(x=databd.index, y=databd['VAB'], name='vAB'),row=1,col=1, secondary_y=False)
@@ -116,16 +126,20 @@ def plotla2(databd, instalacao, RTC, datai, dataf, cols_selection, togglebuttons
         fig.add_trace(go.Scatter(x=databd.index, y=databd['VAC'], name='vAC'),row=3,col=1, secondary_y=False)
         fig.update_yaxes(title_text="Fase", secondary_y=True)
         fig.update_yaxes(title_text="Entre Fases", secondary_y=False)
-    #insta_dir = os.path.join(html,instalacao)
-    #if not os.path.exists(insta_dir):
-    #    os.makedirs(insta_dir)
+    fig.update_layout(
+    title=go.layout.Title(
+        text=f'<b>{cols_selection.upper()}</b><br><b>{instalacao} - {datai} a {dataf}</b><br><b>Sequência: {databd["FREQ"].unique()}</b>',
+        xref="paper",
+        font=dict(family='Courier New, monospace', size=14),
+        x=0)
+    )
+
     html_file = os.path.join(html,instalacao+'_'+cols_selection+".html")
-    #fig.write_html(html_file, auto_open=False)
     fig.update_layout(dict1={'font':{'size':10}})
     fig.update_layout(legend_orientation="h")
-    fig.write_html(html_file, auto_open=True)
+    fig.write_html(html_file, auto_open=False)
     databd.to_csv(cols_selection+'.csv')
-    build_page(html_file,cols_selection)
+    build_page(html_file,colunas, cols_selection,databd)
     
 
     return togglebuttons, disagreetext

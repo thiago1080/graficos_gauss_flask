@@ -42,9 +42,22 @@ body {
   min-height: 100%
 }
 
-#infobox{
+#infobox { 
 border: 5px;
 outline-color:black;
 outline-style:solid;
 width:5%
+}
+
+#caixa{
+border: 5px;
+outline-color:black;
+outline-style:solid;
+width:5%
+}
+
+table, td, th{
+border: 1px solid black;
+font-family:'Courier New, monospace';
+font-size:10px
 }
