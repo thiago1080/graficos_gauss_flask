@@ -56,8 +56,40 @@ outline-style:solid;
 width:5%
 }
 
-table, td, th{
-border: 1px solid black;
-font-family:'Courier New, monospace';
-font-size:10px
+
+table{
+}
+
+.plotly-graph-div, .js-plotly-plot{
+width:90% !important;
+height:80%; !important;
+float:left !important;
+}
+
+.main-svg{
+height:50%5;
+}
+
+
+table {
+  width:5%;
+  float:left;
+  font-family:'Courier New, monospace';
+  border-collapse: collapse;
+  font-size:10px;
+  margin:0.1%
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 2px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+#maindiv{
+height:90%
 }

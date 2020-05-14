@@ -32,9 +32,9 @@ def max_min_table(colunas, cols_selection ,databd):
 def build_page(page,colunas, cols_selection,databd):
     with open(page,'r') as f:
         content = ['{% extends "index.html" %} \n' ,'{% block content %} \n', '<style> #'+cols_selection+' { background-color: #ccc; } </style>' ]
+        content.append('<div id=maindiv>')
         content.append(max_min_table(colunas,cols_selection,databd))
-        #content.append(' <table > <tr> <th>columns</th> <th>max</th> <th>min</th> </tr> <tr> <td>VA</td> <td>'+str(inf["maxVA"])+'</td> <td>'+str(inf["minVA"])+'</td> </tr> <tr> <td>VB</td> <td>'+str(inf["maxVB"])+'</td>    <td>'+str(inf["minVB"])+'</td> </tr> <tr> <td>VC</td> <td>'+str(inf["minVC"])+'</td> <td>'+str(inf["maxVC"])+'</td> </tr> <tr> <td>VAC</td> <td>'+str(inf["maxVAC"])+'</td> <td>'+str(inf["minVAC"])+'</td> </tr> <tr> <td>VBC</td> <td>'+str(inf["maxVBC"])+'</td> <td>'+str(inf["minVBC"])+'</td> </tr> <tr> <td>VAB</td> <td>'+str(inf["maxVAB"])+'</td> <td>'+str(inf["minVAB"])+'</td> </tr> </table>')
-        content.extend(f.read().splitlines(True)[3:-2])
+        content.extend(f.read().splitlines(True)[4:-2])
         content.append('{% endblock %}')
     with open(page,'w') as f:
         f.writelines(content)
@@ -138,7 +138,6 @@ def plotla2(databd, instalacao, RTC, datai, dataf, cols_selection, togglebuttons
     fig.update_layout(dict1={'font':{'size':10}})
     fig.update_layout(legend_orientation="h")
     fig.write_html(html_file, auto_open=False)
-    databd.to_csv(cols_selection+'.csv')
     build_page(html_file,colunas, cols_selection,databd)
     
 
