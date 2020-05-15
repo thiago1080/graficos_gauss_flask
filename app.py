@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, url_for
 import os
 import sys
 from os import listdir as ld
@@ -107,6 +107,17 @@ def postJsonHandler():
     togglebuttons, disagreetext = plotla2(fas1, instalacao, RTC, datai, dataf,'potencias', togglebuttons, disagreetext, index, foco)
     togglebuttons, disagreetext = plotla2(fas1, instalacao, RTC, datai, dataf,'tensoes', togglebuttons, disagreetext, index, foco)
     togglebuttons, disagreetext = plotla2(fas1, instalacao, RTC, datai, dataf,'angulos', togglebuttons, disagreetext, index, foco)
+    if  os.path.exists('cache.pkl') and os.path.isfile('cache.pkl'):
+        with open('cache.pkl','rb') as p:
+            cache = pickle.load(p)
+    else:
+        cache=[]
+    if instalacao not in cache:
+        cache.append(instalacao)
+        with open('cache.pkl','wb') as p:
+            pickle.dump(list(set(cache)),p)
+    print('cache ---->', cache)
+
     return render_template('index.html',insta=instalacao, info=info0, abas=abas0)
 
 @app.route('/<instalacao>')
@@ -132,6 +143,16 @@ def template_index(instalacao, informacao):
     print('-----------------TEMPLATIOON----------------',ios.path.join('cache',instalacao))nstalacao)
     return redirect(url_for((os.path.join('cache',instalacao, informacao+'.html'))))
 """
+
+@app.route('/')
+def root():
+    if  os.path.exists('cache.pkl') and os.path.isfile('cache.pkl'):
+        with open('cache.pkl','rb') as p:
+            cache=pickle.load(p)
+    else:
+        cache=[]
+    print(request.base_url)
+    return render_template('cache.html',_url=request.base_url, _cache=cache)
 
 if __name__ == '__main__':
     app.jinja_env.cache = {}

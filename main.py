@@ -6,6 +6,7 @@ from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 import numpy as np
 import os
+import pickle
 
 from IPython.display import display, Markdown, clear_output
 import ipywidgets as widgets
@@ -140,6 +141,7 @@ def plotla2(databd, instalacao, RTC, datai, dataf, cols_selection, togglebuttons
         font=dict(family='Courier New, monospace', size=14),
         x=0)
     )
+
     html_file = os.path.join(html,instalacao+'_'+cols_selection+".html")
     fig.update_layout(dict1={'font':{'size':10}})
     fig.update_layout(legend_orientation="h")
