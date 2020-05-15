@@ -111,19 +111,21 @@ def postJsonHandler():
 
 @app.route('/<instalacao>')
 def template_index(instalacao):
+    abas1=abas0.copy()
     if '_' not in instalacao:
         print('-----------------TEMPLATIOON----------------',instalacao)
-        return render_template('index.html',insta=instalacao, info=info0, abas=abas0)
+        abas1=abas0.copy()
+        return render_template('index.html',insta=instalacao, info=info0, abas=abas1)
     else:
         print('-----------------NOOITALPMET----------------',instalacao)
         insta= instalacao.split('_')[0]
         cols_selection=instalacao.split('_')[1].split('.html')[0]
-        for k in abas0.keys():
+        for k in abas1.keys():
             if k==cols_selection:
-                abas0[k]='tablinks  active'
+                abas1[k]='tablinks  active'
             else:
-                abas0[k]='tablinks'
-        return render_template(instalacao ,insta=insta,  info=info0, abas=abas0)
+                abas1[k]='tablinks'
+        return render_template(instalacao ,insta=insta,  info=info0, abas=abas1)
 """
 @app.route('/<instalacao>/<informacao>')
 def template_index(instalacao, informacao):

@@ -20,7 +20,7 @@ colunas = {
 
 def max_min_table(colunas, cols_selection ,databd):
     s=''
-    s+='<table> <tr> <th> Coluna </th> <th> Máximo </th> <th> Mínimo </th> </tr>'
+    s+='<table> <tr> <th> Coluna </th> <th> Mínimo</th> <th> Máximo</th> </tr>'
     for i in colunas[cols_selection]:
         s+=('<tr>')
         s+=(f'<td><b>{i}</b></td>')

@@ -44,7 +44,7 @@ html {
   height: 100%
 }
 body {
-  min-height: 100%
+  min-height: 80%
 }
 
 #infobox { 
@@ -66,14 +66,11 @@ table{
 }
 
 .plotly-graph-div, .js-plotly-plot{
-width:90% !important;
-height:80%; !important;
+width:80% !important;
+height:60%; !important;
 float:left !important;
 }
 
-.main-svg{
-height:50%5;
-}
 
 
 table {
