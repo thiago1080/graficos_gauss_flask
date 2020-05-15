@@ -17,6 +17,12 @@ colunas = {
     'correntes': ['IA','IB','IC', 'VA', 'VB', 'VC']
 }
 
+translate = {
+    'potencias':'POTÊNCIAS',
+    'angulos': 'ÂNGULOS',
+    'tensoes': 'TENSÕES',
+    'correntes': 'CORRENTES'
+}
 
 def max_min_table(colunas, cols_selection ,databd):
     s=''
@@ -129,7 +135,7 @@ def plotla2(databd, instalacao, RTC, datai, dataf, cols_selection, togglebuttons
         fig.update_yaxes(title_text="Entre Fases", secondary_y=False)
     fig.update_layout(
     title=go.layout.Title(
-        text=f'<b>{instalacao} - {cols_selection.upper()}</b><br><b>{datai} a {dataf}</b><br><b>Sequência: {str(databd["FREQ"].unique()[0])}</b>',
+        text=f'<b>{instalacao} - {translate[cols_selection]}</b><br><b>{datai} a {dataf}</b><br><b>Sequência: {str(databd["FREQ"].unique()[0])}</b>',
         xref="paper",
         font=dict(family='Courier New, monospace', size=14),
         x=0)
