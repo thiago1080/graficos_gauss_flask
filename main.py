@@ -51,7 +51,8 @@ def build_table(dici):
 def build_page(page,colunas, cols_selection,databd,**kwargs):
     with open(page,'r') as f:
         content = ['{% extends "index.html" %} \n' ,'{% block content %} \n']
-        content.append('<div id=maindiv>')
+        content.append('<div id="loader"></div>')
+        content.append('<div id="maindiv" style="display:block" class="animate-botton">')
         content.append(max_min_table(colunas,cols_selection,databd))
         if cols_selection=='potencias':
             print('**************potencias**************888')
