@@ -4,7 +4,7 @@
 
 <link rel="preload" href="../static/styles.css" as="style">
 <link rel="preload" href="../static/styles.css" as="script">
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <link rel="stylesheet" href="../static/styles.css">
 <script type="text/javascript" src="../static/js.js"></script>
 
@@ -22,5 +22,17 @@
   <button id="tensoes" class={{abas["tensoes"]|tojson}} onclick = 'redir({{(insta+"_"+info[2]+".html")|tojson}})'> Tensões</button>
   <button id="angulos" class={{abas["angulos"]|tojson}} onclick = 'redir({{(insta+"_"+info[3]+".html")|tojson}})'> Ângulos</button>
 </div>
+<script>
+$('body').append('<div id="loader"><div class="loader"></div></div>');
+$(window).on('load', function(){
+  setTimeout(removeLoader, 0); //wait for page load PLUS two seconds.
+});
+function removeLoader(){
+    $( "#loader" ).fadeOut(600, function() {
+      // fadeOut complete. Remove the loading div
+      $( "#loader" ).remove(); //makes page more lightweight 
+  });  
+}
+</script>
 {% endblock %}
 {% block content %} {% endblock %}
