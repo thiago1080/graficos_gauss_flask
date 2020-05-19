@@ -13,8 +13,8 @@ import ipywidgets as widgets
 
 colunas = {
     'potencias': ['IA','IB','IC', 'PA', 'PB', 'PC'],
-    'angulos': ['VA','VB','VC','AVAB','AVBC','AVAC'],
-    'tensoes': ['VA','VB','VC','AVAB','AVBC','AVAC'],
+    'angulos': ['VA','VB','VC','AVA','AVB','AVC'],
+    'tensoes': ['VA','VB','VC','VAB','VBC','VAC'],
     'correntes': ['IA','IB','IC', 'VA', 'VB', 'VC']
 }
 
@@ -37,11 +37,26 @@ def max_min_table(colunas, cols_selection ,databd):
     s+='</table>'
     return s
 
-def build_page(page,colunas, cols_selection,databd):
+def build_table(dici):
+    s='<table>'
+    for k,v in dici.items():
+        s+=('<tr>')
+        s+=(f'<td><b>{k}</b></td>')
+        s+=(f'<td>{v.round(decimals=0)}</td>')
+        s+=('</tr>')
+    s+='</table>'
+    return s
+
+
+def build_page(page,colunas, cols_selection,databd,**kwargs):
     with open(page,'r') as f:
         content = ['{% extends "index.html" %} \n' ,'{% block content %} \n']
         content.append('<div id=maindiv>')
         content.append(max_min_table(colunas,cols_selection,databd))
+        if cols_selection=='potencias':
+            print('**************potencias**************888')
+            correlations_pi = kwargs['correlations']
+            content.append(build_table(correlations_pi))
         content.extend(f.read().splitlines(True)[4:-2])
         content.append('{% endblock %}')
     with open(page,'w') as f:
@@ -77,6 +92,7 @@ def query_oracle(command):
 
 def plotla2(databd, instalacao, RTC, datai, dataf, cols_selection, togglebuttons, disagreetext, index, foco):
 
+    correlations = {'iA/pA':'NA','iB/pB':'NA','iC/pC':'NA'}
     info_text='<br>'
     html = "templates/" #hc
     proj="P&D Light"
@@ -93,6 +109,13 @@ def plotla2(databd, instalacao, RTC, datai, dataf, cols_selection, togglebuttons
 
 
     if cols_selection == 'potencias':
+        #ajuste da correlação para evitar NAN quando todos os valores são zerados
+        correlations = {'iA/pA':0,'iB/pB':0,'iC/pC':0}
+        for i in ['A','B','C']:
+            if (not np.isnan(databd['I'+i].corr(databd['P'+i]))):
+                correlations['i'+i+'/p'+i] = databd['I'+i].corr(databd['P'+i])
+
+
         databd = calcula_potencia_corrente(RTC, databd, cols_selection)
         fig.add_trace(go.Scatter(x=databd.index, y=databd['IA'], name='iA', line=dict(width=1)),row=1,col=1, secondary_y=True)
         fig.add_trace(go.Scatter(x=databd.index, y=databd['PA'], name='pA'),row=1,col=1, secondary_y=False)
@@ -132,7 +155,7 @@ def plotla2(databd, instalacao, RTC, datai, dataf, cols_selection, togglebuttons
         fig.add_trace(go.Scatter(x=databd.index, y=databd['VBC'], name='vBC'),row=2,col=1, secondary_y=False)
         fig.add_trace(go.Scatter(x=databd.index, y=databd['VC'], name='vC'),  row=3,col=1, secondary_y=True)
         fig.add_trace(go.Scatter(x=databd.index, y=databd['VAC'], name='vAC'),row=3,col=1, secondary_y=False)
-        fig.update_yaxes(title_text="Fase", secondary_y=True)
+        fig.update_yaxes(title_text="Fase e Neutro", secondary_y=True)
         fig.update_yaxes(title_text="Entre Fases", secondary_y=False)
     fig.update_layout(
     title=go.layout.Title(
@@ -146,7 +169,7 @@ def plotla2(databd, instalacao, RTC, datai, dataf, cols_selection, togglebuttons
     fig.update_layout(dict1={'font':{'size':10}})
     fig.update_layout(legend_orientation="h")
     fig.write_html(html_file, auto_open=False)
-    build_page(html_file,colunas, cols_selection,databd)
+    build_page(html_file,colunas, cols_selection,databd,correlations=correlations)
     
 
     return togglebuttons, disagreetext
